@@ -9,6 +9,8 @@
     <td th:text="${user.getId()}"></td>
     <td th:text="${user.getFirstName()}"></td>
     <td th:text="${user.getLastName()}"></td>
+    <td><a th:href="@{/user-update/{userId}(userId=${user.getId()})}">Edit</a></td>
+    <td><a th:href="@{/user-delete/{userId}(userId=${user.getId()})}">Delete</a></td>
 </tr>
 </body>
 </html>
