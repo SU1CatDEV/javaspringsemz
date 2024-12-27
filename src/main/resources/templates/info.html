@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>info</title>
+</head>
+<body>
+    <h1>project info</h1>
+    <p>this project is called <span th:text="${name}"/>.
+        it was created by <span th:text="${author}"/>, with github <span th:text="${github}"/>.
+        heres a fun fact: <span th:text="${funfact}"/>!
+    </p>
+</body>
+</html>
