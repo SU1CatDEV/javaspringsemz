@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Update note</title>
+</head>
+<body>
+<form action="#" th:action="@{/note-update}" th:object="${editing}" method="post">
+    <label for="id">ID</label>
+    <input type="text" th:field="*{id}" id="id" readonly>
+
+    <label for="desc">Description</label>
+    <textarea th:field="*{description}" id="desc" placeholder="Note Description"></textarea>
+
+    <label for="status">Status</label>
+    <select th:field="*{status}" id="status">
+        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.getLabel()}"></option>
+    </select>
+
+    <input type="submit" value="Update">
+</form>
+</body>
+</html>

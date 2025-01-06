@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Create note</title>
+</head>
+<body>
+<form action="#" th:action="@{/note-create}" th:object="${note}" method="post">
+    <label for="desc">Description</label>
+    <textarea th:field="*{description}" id="desc" placeholder="Note Description"></textarea>
+
+    <label for="status">Status</label>
+    <select th:field="*{status}" id="status">
+        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.getLabel()}"></option>
+    </select>
+
+    <input type="submit" value="Create">
+</form>
+</body>
+</html>
