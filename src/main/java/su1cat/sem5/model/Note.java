@@ -11,7 +11,7 @@ public class Note {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "description", length = 10)
+    @Column(name = "description", length = 2000)
     private String description;
 
     @Enumerated(EnumType.STRING)

@@ -43,10 +43,12 @@ public class NoteRestController {
         if (note.getDescription().length() > 10) {
             return ResponseEntity.badRequest().body("Note description exceeds 2000 characters");
         }
-        Note createdNote = noteService.createNote(note);
+        Note createdNote = noteService.createNote(note); // separated in case something goes way too wrong. but thats not my problem.
+        // thats the backend dev's job. we ignore the fact that IM doing the backend for the purposes of this thought experiment.
         return ResponseEntity.ok(createdNote);
     }
 
+    // and this folks is why im allowed to call myself a programmer. because i copy pasted this thing from stackoverflow. types r hard.
     @PatchMapping("/notes/{noteId}")
     public ResponseEntity<Object> updateNote(@PathVariable("noteId") Long noteId, @RequestBody Note note) {
         if (!noteService.exists(noteId)) {
