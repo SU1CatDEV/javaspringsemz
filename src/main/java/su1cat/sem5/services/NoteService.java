@@ -25,15 +25,15 @@ public class NoteService {
         return noteRepository.findNoteByStatus(status);
     }
 
-    public void createNote(Note note) {
-        noteRepository.save(note);
+    public Note createNote(Note note) {
+        return noteRepository.save(note);
     }
 
-    public void updateNote(Long id, Note moddedNote) {
+    public Note updateNote(Long id, Note moddedNote) {
         Note note = noteRepository.getReferenceById(id);
         note.setDescription(moddedNote.getDescription());
         note.setStatus(moddedNote.getStatus());
-        noteRepository.save(note);
+        return noteRepository.save(note);
     }
 
     public void deleteNote(Long id) {
@@ -44,5 +44,9 @@ public class NoteService {
 
     public Note findNoteById(Long id) {
         return noteRepository.findNoteById(id);
+    }
+
+    public boolean exists(Long id) {
+        return noteRepository.existsById(id);
     }
 }
