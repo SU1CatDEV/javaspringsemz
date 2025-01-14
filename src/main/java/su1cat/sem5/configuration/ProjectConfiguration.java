@@ -49,7 +49,7 @@ public class ProjectConfiguration {
     @ServiceActivator(inputChannel = "fileWriterChannel")
     public FileWritingMessageHandler messageHandler() {
         FileWritingMessageHandler handler =
-                new FileWritingMessageHandler(new File("C:/Users/Zoya/Documents/actuallybotheringwithgb/demo/temp"));
+                new FileWritingMessageHandler(new File("C:/Users/Zoya/Documents/geekbrains/demo/temp"));
         handler.setExpectReply(false);
         handler.setFileExistsMode(FileExistsMode.APPEND);
         handler.setAppendNewLine(true);

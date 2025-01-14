@@ -43,3 +43,7 @@ public class TrackUserAspect {
         }
     }
 }
+
+// todo: add subtasks. because im committed to over-engineering this.
+// todo: add some semblance of security
+// todo: tests. tests tests tests so many tests
