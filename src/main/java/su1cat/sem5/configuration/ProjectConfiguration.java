@@ -4,7 +4,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.integration.annotation.Transformer;
+import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.core.GenericTransformer;
+import org.springframework.integration.file.FileWritingMessageHandler;
+import org.springframework.integration.file.support.FileExistsMode;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 import su1cat.sem5.aspects.TrackUserAspect;
+import su1cat.sem5.observers.NoteObserver;
+
+import java.io.File;
+import java.io.FileWriter;
 
 @Configuration
 @ComponentScan("su1cat.sem5")
@@ -12,6 +24,36 @@ import su1cat.sem5.aspects.TrackUserAspect;
 public class ProjectConfiguration {
     @Bean
     public TrackUserAspect aspect() {
-        return new TrackUserAspect();
+        TrackUserAspect trackUserAspect = new TrackUserAspect();
+        trackUserAspect.addObserver(new NoteObserver());
+        return trackUserAspect;
+    }
+
+    @Bean
+    public MessageChannel textInputChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    public MessageChannel fileWriterChannel() {
+        return new DirectChannel();
+    }
+
+    @Bean
+    @Transformer(inputChannel = "textInputChannel", outputChannel = "fileWriterChannel")
+    public GenericTransformer<String, String> mainTransformer() {
+        return text -> text;
+    }
+
+    @Bean
+    @ServiceActivator(inputChannel = "fileWriterChannel")
+    public FileWritingMessageHandler messageHandler() {
+        FileWritingMessageHandler handler =
+                new FileWritingMessageHandler(new File("C:/Users/Zoya/Documents/actuallybotheringwithgb/demo/temp"));
+        handler.setExpectReply(false);
+        handler.setFileExistsMode(FileExistsMode.APPEND);
+        handler.setAppendNewLine(true);
+
+        return handler;
     }
 }

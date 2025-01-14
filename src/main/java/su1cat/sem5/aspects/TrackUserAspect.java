@@ -1,22 +1,45 @@
 package su1cat.sem5.aspects;
 
-import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
+import su1cat.sem5.observers.Observer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Aspect
+@Component
 public class TrackUserAspect {
-    private static final Logger logger =
-            Logger.getLogger(TrackUserAspect.class.getName());
-    @Before("@annotation(su1cat.sem5.aspects.TrackUserAction)")
-    public void trackUserAction(JoinPoint joinPoint) {
-        String user = "currentUser"; // с безопасностью еще разбераюсь.
+    private static final Logger logger = Logger.getLogger(TrackUserAspect.class.getName());
+
+    private final List<Observer> observers = new ArrayList<>();
+
+    public void addObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Around("@annotation(su1cat.sem5.aspects.TrackUserAction)")
+    public Object trackUserAction(ProceedingJoinPoint joinPoint) throws Throwable {
+        String user = "currentUser";
         String methodName = joinPoint.getSignature().toString();
         Object[] args = joinPoint.getArgs();
-        System.out.println("User " + user + " invoked " + methodName + " with arguments: " + Arrays.toString(args));
-        logger.info("User " + user + " invoked " + methodName + " with arguments: " + Arrays.toString(args));
+        String logMessage = "User " + user + " invoked " + methodName + " with arguments: " + Arrays.toString(args);
+
+        System.out.println(logMessage);
+        logger.info(logMessage);
+
+        notifyObservers(logMessage);
+
+        return joinPoint.proceed();
+    }
+
+    private void notifyObservers(String message) {
+        for (Observer observer : observers) {
+            observer.update(message);
+        }
     }
 }

@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import su1cat.sem5.model.Note;
+import su1cat.sem5.services.FileGateway;
 import su1cat.sem5.services.NoteService;
 import su1cat.sem5.types.NoteStatus;
 
@@ -17,6 +19,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class NoteRestController {
+
+    @Autowired
+    private FileGateway fileGateway;
 
     @Autowired
     private final NoteService noteService;
@@ -45,6 +50,7 @@ public class NoteRestController {
         }
         Note createdNote = noteService.createNote(note); // separated in case something goes way too wrong. but thats not my problem.
         // thats the backend dev's job. we ignore the fact that IM doing the backend for the purposes of this thought experiment.
+        fileGateway.writeToFile(note.getDescription() + ".txt", note.toString()); // todo: make title.
         return ResponseEntity.ok(createdNote);
     }
 

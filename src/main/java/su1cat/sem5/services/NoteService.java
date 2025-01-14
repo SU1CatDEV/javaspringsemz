@@ -1,6 +1,7 @@
 package su1cat.sem5.services;
 
 //import su1cat.sem5.aspects.TrackUserAction;
+import org.springframework.transaction.annotation.Transactional;
 import su1cat.sem5.aspects.TrackUserAction;
 import su1cat.sem5.model.Note;
 import su1cat.sem5.repository.NoteRepository;
@@ -27,7 +28,7 @@ public class NoteService {
         return noteRepository.findNoteByStatus(status);
     }
 
-   @TrackUserAction
+    @TrackUserAction
     public Note createNote(Note note) {
         return noteRepository.save(note);
     }
@@ -40,6 +41,7 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
+    @TrackUserAction
     public void deleteNote(Long id) {
         if (noteRepository.existsById(id)) {
             noteRepository.deleteById(id);
