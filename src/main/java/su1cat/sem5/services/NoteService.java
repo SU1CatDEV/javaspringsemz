@@ -1,10 +1,9 @@
 package su1cat.sem5.services;
 
 //import su1cat.sem5.aspects.TrackUserAction;
-import org.springframework.transaction.annotation.Transactional;
 import su1cat.sem5.aspects.TrackUserAction;
 import su1cat.sem5.model.Note;
-import su1cat.sem5.repository.NoteRepository;
+import su1cat.sem5.repository.NoteManager;
 import su1cat.sem5.types.NoteStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,45 +13,88 @@ import java.util.List;
 @Service
 public class NoteService {
     @Autowired
-    private final NoteRepository noteRepository;
+    private final NoteManager noteManager;
 
-    public NoteService(NoteRepository noteRepository) {
-        this.noteRepository = noteRepository;
+    public NoteService(NoteManager noteManager) {
+        this.noteManager = noteManager;
     }
 
     public List<Note> findAllNotes() {
-        return noteRepository.findAll();
+        return noteManager.findAllNotes();
     }
 
     public List<Note> findNoteByStatus(NoteStatus status) {
-        return noteRepository.findNoteByStatus(status);
+        return noteManager.findNoteByStatus(status);
     }
 
     @TrackUserAction
     public Note createNote(Note note) {
-        return noteRepository.save(note);
+        return noteManager.createNote(note);
     }
 
     @TrackUserAction
     public Note updateNote(Long id, Note moddedNote) {
-        Note note = noteRepository.getReferenceById(id);
-        note.setDescription(moddedNote.getDescription());
-        note.setStatus(moddedNote.getStatus());
-        return noteRepository.save(note);
+        return noteManager.updateNote(id, moddedNote);
     }
 
-    @TrackUserAction
     public void deleteNote(Long id) {
-        if (noteRepository.existsById(id)) {
-            noteRepository.deleteById(id);
+        if (noteManager.exists(id)) {
+            noteManager.deleteNote(id);
         }
     }
 
     public Note findNoteById(Long id) {
-        return noteRepository.findNoteById(id);
+        return noteManager.findNoteById(id);
     }
 
     public boolean exists(Long id) {
-        return noteRepository.existsById(id);
+        return noteManager.exists(id);
     }
 }
+
+
+//package su1cat.sem5.services;
+//
+//        import su1cat.sem5.aspects.TrackUserAction;
+//        import su1cat.sem5.model.Note;
+//        import su1cat.sem5.repository.NoteManager;
+//        import su1cat.sem5.types.NoteStatus;
+//        import org.springframework.stereotype.Service;
+//
+//        import java.util.List;
+//
+//@Service
+//public class NoteService {
+//    private final NoteManager noteManager = NoteManager.getInstance();
+//
+//    public List<Note> findAllNotes() {
+//        return noteManager.findAllNotes();
+//    }
+//
+//    public List<Note> findNoteByStatus(NoteStatus status) {
+//        return noteManager.findNoteByStatus(status);
+//    }
+//
+//    @TrackUserAction
+//    public Note createNote(Note note) {
+//        return noteManager.createNote(note);
+//    }
+//
+//    @TrackUserAction
+//    public Note updateNote(Long id, Note moddedNote) {
+//        return noteManager.updateNote(id, moddedNote);
+//    }
+//
+//    @TrackUserAction
+//    public void deleteNote(Long id) {
+//        noteManager.deleteNote(id);
+//    }
+//
+//    public Note findNoteById(Long id) {
+//        return noteManager.findNoteById(id);
+//    }
+//
+//    public boolean exists(Long id) {
+//        return noteManager.exists(id);
+//    }
+//}

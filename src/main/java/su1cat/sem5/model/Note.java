@@ -6,29 +6,22 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Note {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "task_type", discriminatorType = DiscriminatorType.STRING)
+public abstract class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Column(name = "description", length = 2000)
-    private String description;
+    protected String description;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private NoteStatus status;
+    protected NoteStatus status;
 
     @Column(name = "date")
-    private Date dateCreated = new Date();
-
-    public Note() {
-
-    }
-
-    public Note(String description, NoteStatus status) {
-        this.description = description;
-        this.status = status;
-    }
+    protected Date dateCreated = new Date();
 
     public Long getId() {
         return id;
@@ -62,13 +55,7 @@ public class Note {
         this.dateCreated = dateCreated;
     }
 
-    public Note replaceNullWithPrev(Note note) {
-        Note replacedNote = new Note(
-                (this.description != null ? this.description : note.description),
-                (this.status != null ? this.status : note.status)
-        );
-        return replacedNote;
-    }
+    public abstract Note replaceNullWithPrev(Note note);
 
     public boolean hasThisNulls() {
         return this.description == null || this.status == null;

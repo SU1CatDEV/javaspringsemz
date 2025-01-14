@@ -14,6 +14,9 @@
         <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.getLabel()}"></option>
     </select>
 
+    <label for="urgent"></label>
+    <input type="checkbox" id="urgent" name="urgent"/>
+
     <input type="submit" value="Create">
 </form>
 </body>

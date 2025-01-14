@@ -9,6 +9,7 @@
     <td th:text="${note.getId()}"></td>
     <td th:text="${note.getDescription()}"></td>
     <td th:text="${note.getStatus().getLabel()}"></td>
+<!--    <td th:text="${note.getClass().getName()}"></td>-->
     <td><a th:href="@{/note-update/{noteId}(noteId=${note.getId()})}">Edit</a></td>
     <td><a th:href="@{/note-delete/{noteId}(noteId=${note.getId()})}">Delete</a></td>
 </tr>
