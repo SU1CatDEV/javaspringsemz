@@ -1,5 +1,7 @@
 package su1cat.sem5.services;
 
+//import su1cat.sem5.aspects.TrackUserAction;
+import su1cat.sem5.aspects.TrackUserAction;
 import su1cat.sem5.model.Note;
 import su1cat.sem5.repository.NoteRepository;
 import su1cat.sem5.types.NoteStatus;
@@ -25,10 +27,12 @@ public class NoteService {
         return noteRepository.findNoteByStatus(status);
     }
 
+   @TrackUserAction
     public Note createNote(Note note) {
         return noteRepository.save(note);
     }
 
+    @TrackUserAction
     public Note updateNote(Long id, Note moddedNote) {
         Note note = noteRepository.getReferenceById(id);
         note.setDescription(moddedNote.getDescription());

@@ -21,6 +21,10 @@ public class Note {
     @Column(name = "date")
     private Date dateCreated = new Date();
 
+    public Note() {
+
+    }
+
     public Note(String description, NoteStatus status) {
         this.description = description;
         this.status = status;

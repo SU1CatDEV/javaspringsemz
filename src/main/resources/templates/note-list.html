@@ -2,15 +2,15 @@
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <title>Books</title>
+    <title>Notes</title>
 </head>
 <body>
 <tr th:each="note: ${notes}">
     <td th:text="${note.getId()}"></td>
     <td th:text="${note.getDescription()}"></td>
     <td th:text="${note.getStatus().getLabel()}"></td>
-<!--    <td><a th:href="@{/book-update/{bookId}(bookId=${book.getId()})}">Edit</a></td>-->
-<!--    <td><a th:href="@{/book-delete/{bookId}(bookId=${book.getId()})}">Delete</a></td>-->
+    <td><a th:href="@{/note-update/{noteId}(noteId=${note.getId()})}">Edit</a></td>
+    <td><a th:href="@{/note-delete/{noteId}(noteId=${note.getId()})}">Delete</a></td>
 </tr>
 </body>
 </html>
