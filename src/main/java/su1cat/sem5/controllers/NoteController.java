@@ -25,17 +25,18 @@ public class NoteController {
     }
 
     @GetMapping("/note-create")
-    public String createNoteForm(NormalNote note, Model model) {
+    public String createNoteForm(Model model) {
+        model.addAttribute("note", new NormalNote());
         model.addAttribute("statuses", NoteStatus.values());
         return "note-create";
     }
 
+
     @PostMapping("/note-create")
-    public String createNote(@ModelAttribute NormalNote note, @RequestParam Boolean isUrgent) {
-//        UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory();
-//        NormalNoteFactory normalNoteFactory = new NormalNoteFactory();
+    public String createNote(@ModelAttribute NormalNote note, @RequestParam(name = "urgent", defaultValue = "false") Boolean isUrgent) {
+        UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory(); // пожалуй не самый элегантный способ, но однако абстрактный класс Thymeleaf не дает передавать в темплейт.
         if (isUrgent) {
-            UrgentNote urgentNote = new UrgentNote();
+            UrgentNote urgentNote = urgentNoteFactory.createNote();
             urgentNote.setDescription(note.getDescription());
             urgentNote.setStatus(note.getStatus());
             noteService.createNote(urgentNote);
