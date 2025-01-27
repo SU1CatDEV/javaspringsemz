@@ -1,8 +1,0 @@
-server:
-  port: 8081
-
-spring:
-  application:
-    name: ReviewMicroservice
-  main:
-    web-application-type: reactive

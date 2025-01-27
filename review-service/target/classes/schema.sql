@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS review (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    rating SMALLINT NOT NULL,
-    text VARCHAR(100),
-    product INT NOT NULL
-);

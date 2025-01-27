@@ -1,8 +1,0 @@
-server:
-  port: 8082
-
-spring:
-  application:
-    name: ProductsMicroservice
-  main:
-    web-application-type: reactive
