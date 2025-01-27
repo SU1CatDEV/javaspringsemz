@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en"  xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Product</title>
+</head>
+<body>
+  <h1 th:text="${product.getName()}"></h1>
+  <h2 th:text="${product.getPrice()}"></h2>
+  <p th:text="${product.getDescription()}"></p>
+  <p th:text="${product.getId()}"></p>
+  <a th:href="@{/products/addtocart/{productId}(productId=${product.getId()})}">Add to cart</a>
+  <form action="#" th:action="@{/reviews/}" th:object="${review}" method="post">
+    <label for="rating">give a rating:</label>
+    <input th:field="*{rating}" id="rating" placeholder="1-5" type="number" max="5" min="1" required/>
+    <label for="text">review text</label>
+    <textarea th:field="*{text}" id="text" placeholder="description"></textarea>
+    <input type="number" readonly th:field="*{product}"/>
+    <input type="submit" value="Create">
+  </form>
+  <div>
+    <p th:each="review: ${reviews}">
+      <span th:text="${review.getId()}"></span>:
+      <span th:text="${review.getRating()}"></span> stars.
+      "<span th:text="${review.getText()}"></span>"
+      <!-- i wouldnt know security if it was staring me in the face, clearly. -->
+      <a th:href="@{/reviews/delete/{reviewId}(reviewId=${review.getId()})}">Delete</a>
+    </p>
+  </div>
+</body>
+</html>

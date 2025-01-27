@@ -1,0 +1,18 @@
+server:
+  port: 8675
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: ReviewMicroservice
+          uri: http://localhost:8081
+          predicates:
+            - Path=/serviceA/**
+        - id: ProductsMicroservice
+          uri: http://localhost:8082
+          predicates:
+            - Path=/products/**
+        - id: CartMicroservice
+            uri: http://localhost:8083
+            predicates:
+              - Path=/cart/**
