@@ -3,6 +3,7 @@ package su1cat.sem5.controllers;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 import su1cat.sem5.model.*;
+import su1cat.sem5.model.exceptions.NoteNotFoundException;
 import su1cat.sem5.services.NoteService;
 import su1cat.sem5.types.NoteStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,11 @@ public class NoteController {
     @GetMapping("/note-update/{noteId}")
     public String updateNote(@PathVariable(value="noteId") Long id, Model model) {
         Note editing = noteService.findNoteById(id);
-        model.addAttribute("editing", editing);
+        if (editing != null) {
+            model.addAttribute("editing", editing);
+        } else {
+            throw new NoteNotFoundException();
+        }
         model.addAttribute("statuses", NoteStatus.values());
         return "note-update";
     }
