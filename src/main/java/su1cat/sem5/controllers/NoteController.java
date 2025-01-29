@@ -34,11 +34,12 @@ public class NoteController {
 
     @PostMapping("/note-create")
     public String createNote(@ModelAttribute NormalNote note, @RequestParam(name = "urgent", defaultValue = "false") Boolean isUrgent) {
+        if (note.getDescription().length() > 2000) {
+            return "note-error.html";
+        }
         UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory(); // пожалуй не самый элегантный способ, но однако абстрактный класс Thymeleaf не дает передавать в темплейт.
         if (isUrgent) {
-            UrgentNote urgentNote = urgentNoteFactory.createNote();
-            urgentNote.setDescription(note.getDescription());
-            urgentNote.setStatus(note.getStatus());
+            UrgentNote urgentNote = urgentNoteFactory.createFromOther(note);
             noteService.createNote(urgentNote);
         } else {
             noteService.createNote(note);
@@ -55,8 +56,17 @@ public class NoteController {
     }
 
     @PostMapping("/note-update")
-    public String updateNote(Note note) {
-        noteService.updateNote(note.getId(), note);
+    public String updateNote(@ModelAttribute NormalNote note) {
+        if (note.getDescription().length() > 2000) {
+            return "note-error.html";
+        }
+        UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory();
+        if (noteService.findNoteById(note.getId()) instanceof UrgentNote) {
+            UrgentNote urgentNote = urgentNoteFactory.createFromOther(note);
+            noteService.updateNote(urgentNote);
+        } else {
+            noteService.updateNote(note);
+        }
         return "redirect:/notes";
     }
 

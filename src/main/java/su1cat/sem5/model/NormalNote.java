@@ -12,14 +12,16 @@ public class NormalNote extends Note{
 
     }
 
-    public NormalNote(String description, NoteStatus status) {
+    public NormalNote(Long id, String description, NoteStatus status) {
+        this.id = id;
         this.description = description;
         this.status = status;
     }
 
     @Override
-    public Note replaceNullWithPrev(Note note) {
-        Note replacedNote = new NormalNote(
+    public NormalNote replaceNullWithPrev(Note note) {
+        NormalNote replacedNote = new NormalNote(
+                (this.id != null ? this.id : note.id),
                 (this.description != null ? this.description : note.description),
                 (this.status != null ? this.status : note.status)
         );

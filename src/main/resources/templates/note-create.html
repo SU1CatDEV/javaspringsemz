@@ -7,7 +7,7 @@
 <body>
 <form action="#" th:action="@{/note-create}" th:object="${note}" method="post">
     <label for="desc">Description</label>
-    <textarea th:field="*{description}" id="desc" placeholder="Note Description"></textarea>
+    <textarea th:field="*{description}" id="desc" placeholder="Note Description" maxlength="2000"></textarea>
 
     <label for="status">Status</label>
     <select th:field="*{status}" id="status">

@@ -8,7 +8,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.integration.file.FileWritingMessageHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import su1cat.sem5.dto.NoteRequest;
+import su1cat.sem5.model.NormalNote;
 import su1cat.sem5.model.Note;
+import su1cat.sem5.model.UrgentNote;
+import su1cat.sem5.model.UrgentNoteFactory;
 import su1cat.sem5.services.FileGateway;
 import su1cat.sem5.services.NoteService;
 import su1cat.sem5.types.NoteStatus;
@@ -41,14 +45,24 @@ public class NoteRestController {
     }
 
     @PostMapping("/notes")
-    public ResponseEntity<Object> addNote(@RequestBody Note note) {
-        if (note.hasThisNulls()) {
-            return ResponseEntity.badRequest().body("Note has null values");
+    public ResponseEntity<Object> addNote(@RequestBody NoteRequest noteRequest) {
+        NormalNote note = noteRequest.getNote();
+        Boolean urgent = noteRequest.getUrgent();
+        if (note == null || urgent == null || note.hasThisNulls()) {
+            return ResponseEntity.badRequest().body("Request has null values");
         }
-        if (note.getDescription().length() > 10) {
+        if (note.getDescription().length() > 2000) {
             return ResponseEntity.badRequest().body("Note description exceeds 2000 characters");
         }
-        Note createdNote = noteService.createNote(note); // separated in case something goes way too wrong. but thats not my problem.
+        Note createdNote;
+        if (urgent) {
+            UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory();
+            UrgentNote urgentNote = urgentNoteFactory.createFromOther(note);
+            createdNote = noteService.createNote(urgentNote);
+        } else {
+            createdNote = noteService.createNote(note);
+        }
+         // separated in case something goes way too wrong. but thats not my problem.
         // thats the backend dev's job. we ignore the fact that IM doing the backend for the purposes of this thought experiment.
         fileGateway.writeToFile(note.getDescription() + ".txt", note.toString()); // todo: make title.
         return ResponseEntity.ok(createdNote);
@@ -56,15 +70,24 @@ public class NoteRestController {
 
     // and this folks is why im allowed to call myself a programmer. because i copy pasted this thing from stackoverflow. types r hard.
     @PatchMapping("/notes/{noteId}")
-    public ResponseEntity<Object> updateNote(@PathVariable("noteId") Long noteId, @RequestBody Note note) {
+    public ResponseEntity<Object> updateNote(@PathVariable("noteId") Long noteId, @RequestBody NormalNote note) {
         if (!noteService.exists(noteId)) {
             return ResponseEntity.badRequest().body("Note does not exist");
         }
-        if (note.getDescription().length() > 10) {
+        if (note.getDescription() != null && note.getDescription().length() > 2000) { // for the case where the description isnt being edited.
             return ResponseEntity.badRequest().body("Note description exceeds 2000 characters");
         }
-        note = note.replaceNullWithPrev(noteService.findNoteById(noteId));
-        Note updatedNote = noteService.updateNote(noteId, note);
+        Note prevNote = noteService.findNoteById(noteId);
+        Note updatedNote;
+        if (prevNote instanceof UrgentNote) {
+            UrgentNoteFactory urgentNoteFactory = new UrgentNoteFactory();
+            UrgentNote urgentNote = urgentNoteFactory.createFromOther(note);
+            urgentNote = urgentNote.replaceNullWithPrev(prevNote); // im sure this is fine.
+            updatedNote = noteService.updateNote(urgentNote);
+        } else {
+            note = note.replaceNullWithPrev(prevNote);
+            updatedNote = noteService.updateNote(note);
+        }
         return ResponseEntity.ok(updatedNote);
     }
 

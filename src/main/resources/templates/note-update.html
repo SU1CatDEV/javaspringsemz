@@ -17,6 +17,8 @@
         <option th:each="s : ${statuses}" th:value="${s}" th:text="${s.getLabel()}"></option>
     </select>
 
+    <input type="hidden" id="urgent" name="urgent" th:value="${urgent}" readonly/>
+
     <input type="submit" value="Update">
 </form>
 </body>
